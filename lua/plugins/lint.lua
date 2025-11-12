@@ -1,135 +1,228 @@
 --[[
-  nvim-lint - Linting
+  Linting Configuration - Local node_modules Support
   
-  Replaces syntastic with modern async linter
-  Configured for eslint_d, yamllint, markdownlint, pug-lint
+  All linters prefer local node_modules/.bin installations first,
+  then fall back to npx, then global commands.
 ]]
 
 return {
   'mfussenegger/nvim-lint',
   event = { 'BufReadPre', 'BufNewFile' },
-  opts = {
-    linters_by_ft = {
-      javascript = { 'eslint_d' },
-      typescript = { 'eslint_d' },
-      javascriptreact = { 'eslint_d' },
-      typescriptreact = { 'eslint_d' },
+  config = function()
+    local lint = require('lint')
+    
+    -- ========================================================================
+    -- HELPER: Find local executable in node_modules or use npx/global
+    -- ========================================================================
+    
+    local function find_local_executable(cmd_name, filepath)
+      -- Get project root by looking for package.json
+      local root = vim.fs.dirname(vim.fs.find({ 'package.json' }, {
+        upward = true,
+        path = filepath,
+      })[1])
+      
+      if root then
+        -- Try local node_modules/.bin/cmd
+        local local_cmd = root .. '/node_modules/.bin/' .. cmd_name
+        if vim.fn.executable(local_cmd) == 1 then
+          return local_cmd
+        end
+      end
+      
+      -- Try npx (will use local if available)
+      if vim.fn.executable('npx') == 1 then
+        return 'npx'
+      end
+      
+      -- Fall back to global command
+      if vim.fn.executable(cmd_name) == 1 then
+        return cmd_name
+      end
+      
+      return nil
+    end
+    
+    -- ========================================================================
+    -- CONFIGURE LINTERS WITH LOCAL SUPPORT
+    -- ========================================================================
+    
+    -- Override remark-lint to use local installation
+    lint.linters.remark_lint = vim.tbl_extend('force', lint.linters.remark_lint or {}, {
+      cmd = 'remark',
+      stdin = true,
+      args = { '--no-stdout', '--quiet', '--frail' },
+      stream = 'stderr',
+      ignore_exitcode = true,
+      parser = lint.linters.remark_lint and lint.linters.remark_lint.parser or function(output)
+        -- Use default parser if available
+        return {}
+      end,
+    })
+    
+    -- Override markdownlint to use local installation
+    if lint.linters.markdownlint then
+      local original_markdownlint = vim.deepcopy(lint.linters.markdownlint)
+      lint.linters.markdownlint = vim.tbl_extend('force', original_markdownlint, {
+        cmd = 'markdownlint',
+      })
+    end
+    
+    -- Set linters by filetype
+    lint.linters_by_ft = {
+      -- JavaScript/TypeScript - handled by custom XO linter below
       python = { 'pylint' },
-      markdown = { 'markdownlint' },
+      markdown = { 'markdownlint' },  -- Will use local if available
       yaml = { 'yamllint' },
-      pug = { 'puglint' },
       sh = { 'shellcheck' },
       bash = { 'shellcheck' },
-    },
-    linters = {},  -- Use built-in linters only
-  },
-  config = function(_, opts)
-    local lint = require('lint')
-
-    -- Set linters
-    lint.linters_by_ft = opts.linters_by_ft
-
-    -- Configure custom linters
-    for name, config in pairs(opts.linters or {}) do
-      lint.linters[name] = config
-    end
-
-    -- Helper function to check if eslint config exists
-    local function has_eslint_config()
-      local config_files = {
-        '.eslintrc',
-        '.eslintrc.js',
-        '.eslintrc.cjs',
-        '.eslintrc.yaml',
-        '.eslintrc.yml',
-        '.eslintrc.json',
-        'eslint.config.js',
-        'eslint.config.mjs',
-        'eslint.config.cjs',
-      }
+      pug = { 'puglint' },  -- Add pug linting
+    }
+    
+    -- ========================================================================
+    -- SMART LINTING: Use local executables when available
+    -- ========================================================================
+    
+    local function smart_lint()
+      local ft = vim.bo.filetype
+      local linters = lint.linters_by_ft[ft]
       
-      local found = vim.fs.find(config_files, {
-        upward = true,
-        stop = vim.env.HOME,
-        path = vim.fn.expand('%:p:h'),
-      })
-      
-      if #found > 0 then
-        return true
+      if not linters then
+        return
       end
       
-      -- Check for eslintConfig in package.json
-      local package_json = vim.fs.find('package.json', {
-        upward = true,
-        stop = vim.env.HOME,
-        path = vim.fn.expand('%:p:h'),
-      })[1]
+      -- For Node.js based linters, try to use local version
+      local node_linters = { 'markdownlint', 'remark_lint', 'puglint' }
+      local filepath = vim.api.nvim_buf_get_name(0)
       
-      if package_json then
-        local ok, content = pcall(vim.fn.readfile, package_json)
-        if ok then
-          local json_str = table.concat(content, '\n')
-          if json_str:match('"eslintConfig"') then
-            return true
-          end
-        end
-      end
-      
-      return false
-    end
-
-    -- Lint on save and other events
-    local lint_augroup = vim.api.nvim_create_augroup('Lint', { clear = true })
-    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
-      group = lint_augroup,
-      callback = function()
-        local ft = vim.bo.filetype
-        local linters = lint.linters_by_ft[ft]
-        
-        if not linters then
-          return
-        end
-        
-        -- For JavaScript/TypeScript, only lint if eslint config exists
-        if vim.tbl_contains({ 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' }, ft) then
-          if not has_eslint_config() then
-            -- Show tip once per session
-            local tip_key = 'lint_tip_eslint_config'
-            if not vim.g[tip_key] then
-              vim.g[tip_key] = true
-              vim.notify(
-                'Tip: Create .eslintrc or eslint.config.js for JavaScript linting',
-                vim.log.levels.INFO
-              )
+      for _, linter_name in ipairs(linters) do
+        if vim.tbl_contains(node_linters, linter_name) then
+          local cmd_name = linter_name:gsub('_lint$', ''):gsub('_', '-')
+          local local_cmd = find_local_executable(cmd_name, filepath)
+          
+          if local_cmd and lint.linters[linter_name] then
+            -- Update linter command to use local version
+            if local_cmd == 'npx' then
+              -- For npx, we need to add the command name as first arg
+              local original_args = lint.linters[linter_name].args or {}
+              lint.linters[linter_name].cmd = 'npx'
+              lint.linters[linter_name].args = vim.list_extend({ cmd_name }, original_args)
+            else
+              lint.linters[linter_name].cmd = local_cmd
             end
-            return  -- Don't run linter without config
           end
         end
-        
-        -- Check if linter is installed
-        local has_linter = false
-        local missing_linters = {}
-        for _, linter_name in ipairs(linters) do
-          if vim.fn.executable(linter_name) == 1 then
-            has_linter = true
-          else
-            table.insert(missing_linters, linter_name)
+      end
+      
+      -- Run linting
+      lint.try_lint()
+    end
+    
+    -- Lint on save for configured filetypes
+    local lint_augroup = vim.api.nvim_create_augroup('Lint', { clear = true })
+    vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
+      group = lint_augroup,
+      callback = smart_lint,
+    })
+    
+    -- ========================================================================
+    -- XO LINTING - Custom Implementation for JavaScript/TypeScript
+    -- ========================================================================
+    
+    local xo_ns = vim.api.nvim_create_namespace('xo_linter')
+    
+    local function run_xo()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local filepath = vim.api.nvim_buf_get_name(bufnr)
+      
+      -- Only run on JS/TS files
+      local ft = vim.bo[bufnr].filetype
+      if not vim.tbl_contains({'javascript', 'typescript', 'javascriptreact', 'typescriptreact'}, ft) then
+        return
+      end
+      
+      -- Skip if file doesn't exist on disk
+      if filepath == '' or vim.fn.filereadable(filepath) == 0 then
+        return
+      end
+      
+      -- Find XO command (local first)
+      local xo_cmd = find_local_executable('xo', filepath)
+      if not xo_cmd then
+        return
+      end
+      
+      -- Build command args
+      local args = {}
+      if xo_cmd == 'npx' then
+        table.insert(args, 'xo')
+      end
+      table.insert(args, filepath)
+      table.insert(args, '--reporter=json')
+      
+      -- Clear previous diagnostics
+      vim.diagnostic.reset(xo_ns, bufnr)
+      
+      -- Run XO asynchronously
+      vim.system(
+        vim.list_extend({ xo_cmd }, args),
+        { text = true },
+        vim.schedule_wrap(function(result)
+          if not vim.api.nvim_buf_is_valid(bufnr) then
+            return
           end
-        end
-        
-        if has_linter then
-          lint.try_lint()
-        elseif #missing_linters > 0 then
-          -- Show helpful tip once per session
-          local tip_key = 'lint_tip_' .. ft
-          if not vim.g[tip_key] then
-            vim.g[tip_key] = true
-            local linter_list = table.concat(missing_linters, ', ')
-            vim.notify(
-              string.format('Tip: Install %s for %s linting via :Mason or npm', linter_list, ft),
-              vim.log.levels.INFO
-            )
+          
+          local output = result.stdout or ''
+          if output == '' then
+            return
           end
+          
+          -- Parse JSON output
+          local ok, decoded = pcall(vim.json.decode, output)
+          if not ok then
+            return
+          end
+          
+          -- Convert to diagnostics
+          local diagnostics = {}
+          for _, file_result in ipairs(decoded) do
+            for _, msg in ipairs(file_result.messages or {}) do
+              table.insert(diagnostics, {
+                bufnr = bufnr,
+                lnum = (msg.line or 1) - 1,
+                col = (msg.column or 1) - 1,
+                end_lnum = (msg.endLine or msg.line or 1) - 1,
+                end_col = (msg.endColumn or msg.column or 1) - 1,
+                severity = msg.severity == 2 and vim.diagnostic.severity.ERROR or vim.diagnostic.severity.WARN,
+                message = msg.message,
+                source = 'xo',
+                code = msg.ruleId,
+              })
+            end
+          end
+          
+          -- Set diagnostics
+          vim.diagnostic.set(xo_ns, bufnr, diagnostics, {})
+        end)
+      )
+    end
+    
+    -- Run XO on save and buffer enter
+    local xo_augroup = vim.api.nvim_create_augroup('XOLint', { clear = true })
+    vim.api.nvim_create_autocmd({ 'BufWritePost', 'BufEnter' }, {
+      group = xo_augroup,
+      pattern = { '*.js', '*.jsx', '*.ts', '*.tsx' },
+      callback = run_xo,
+    })
+    
+    -- Also run on InsertLeave for faster feedback
+    vim.api.nvim_create_autocmd('InsertLeave', {
+      group = xo_augroup,
+      pattern = { '*.js', '*.jsx', '*.ts', '*.tsx' },
+      callback = function()
+        -- Debounce: only run if buffer was modified
+        if vim.bo.modified then
+          run_xo()
         end
       end,
     })

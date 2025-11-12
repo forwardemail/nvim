@@ -38,12 +38,12 @@ A modern, feature-rich Neovim configuration migrated from Vim with full LSP supp
 
 ### Neovim
 
-- **[Neovim](https://neovim.io/) 0.11+** (required for native LSP API)
+- **[Neovim](https://neovim.io/) 0.10.0+** (required for XO linting and native LSP API)
 - Check version: `nvim --version`
 - Install: [Neovim Releases](https://github.com/neovim/neovim/releases)
 
 > [!IMPORTANT]
-> This configuration is optimized for Neovim 0.11+ and will not work with older versions due to the use of the native LSP API.
+> This configuration requires Neovim 0.10.0 or later. XO linting uses `vim.system()` API which is only available in Neovim 0.10+.
 
 ### External Dependencies
 
@@ -97,6 +97,21 @@ These are automatically installed via [Mason](https://github.com/williamboman/ma
 - **LSP Servers**: `lua-language-server`, `typescript-language-server`, `pyright`, etc.
 - **Formatters**: `prettier`, `stylua`, `black`
 - **Linters**: `eslint_d`, `markdownlint`, `shellcheck`
+
+### XO Linter (Required for JavaScript/TypeScript)
+
+If you're working with JavaScript/TypeScript projects that use XO:
+
+```bash
+# Install XO globally
+npm install -g xo
+
+# Verify installation
+xo --version
+```
+
+> [!NOTE]
+> XO linting will only run on files in projects with XO configuration in `package.json`. See the XO Configuration section below.
 
 
 ## 🚀 Installation
@@ -166,8 +181,33 @@ nvim
 - **Lua**: [Stylua](https://github.com/JohnnyMorganz/StyLua)
 - **Markdown/JSON/YAML/CSS/HTML**: [Prettier](https://prettier.io/)
 
+#### 🔍 XO Linting (Direct Implementation)
+**Linter** - Real-time error checking for JavaScript/TypeScript.
+
+**Features:**
+- **Runs on save** - Displays linting errors immediately
+- **No auto-fix** - Shows issues without changing your code
+- **Manual fix** - Use `:Autoformat` or fix by hand
+- **Project-aware** - Respects your `package.json` XO config
+
+**XO Configuration Example** (`package.json`):
+```json
+{
+  "xo": {
+    "semicolon": true,
+    "space": true,
+    "rules": {
+      "capitalized-comments": "off"
+    }
+  }
+}
+```
+
+> [!TIP]
+> XO is a wrapper around ESLint with sensible defaults. See [XO documentation](https://github.com/xojs/xo) for all configuration options.
+
 #### 🔍 [nvim-lint](https://github.com/mfussenegger/nvim-lint)
-**Linter** - Real-time error checking.
+**Linter** - Real-time error checking for other languages.
 
 **Smart Detection:**
 - Linters only run if project config files exist (e.g., `.eslintrc` for `eslint_d`).

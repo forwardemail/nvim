@@ -164,6 +164,22 @@ return {
         { 'cssls' },
       }
 
+      -- Explicitly prevent TypeScript LSP from auto-starting
+      -- This stops ts_ls even if it's installed via Mason
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+        callback = function()
+          -- Stop ts_ls if it tries to attach
+          vim.schedule(function()
+            for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+              if client.name == 'ts_ls' or client.name == 'tsserver' then
+                vim.lsp.stop_client(client.id)
+              end
+            end
+          end)
+        end,
+      })
+      
       -- Configure and enable each server using native API
       for _, server in ipairs(servers) do
         local name = server[1]
