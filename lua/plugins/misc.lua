@@ -1,6 +1,6 @@
 --[[
   Miscellaneous Plugins
-  
+
   Collection of smaller plugins that don't need dedicated files
 ]]
 

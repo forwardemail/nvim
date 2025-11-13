@@ -250,21 +250,28 @@ nvim
 
 ### Customization
 
+#### IR Black Theme
+
+This configuration uses the **IR Black** color scheme - a classic dark theme with pure black background (`#000000`).
+
+**Credits:**
+- Original theme by [Todd Werth](https://x.com/twerth)
+- Vim implementation by [Wes Gibbs](https://github.com/wesgibbs/vim-irblack)
+- Neovim port included in this configuration
+
+**Features:**
+- Pure black background for OLED displays
+- High contrast colors optimized for long coding sessions
+- Full Treesitter and LSP semantic token support
+- Integrated with all plugins (Neo-tree, Telescope, Gitsigns, etc.)
+
+**Theme location:** `~/.config/nvim/colors/ir_black.lua`
+
+For detailed theme documentation, see [IR_BLACK_THEME.md](IR_BLACK_THEME.md).
+
 #### Change Colorscheme
 
-Edit `lua/plugins/colorscheme.lua`:
-
-```lua
-return {
-  {
-    "folke/tokyonight.nvim",
-    config = function()
-      vim.cmd([[colorscheme tokyonight-night]])
-      -- Try: tokyonight-storm, tokyonight-day, tokyonight-moon
-    end,
-  },
-}
-```
+To use a different theme, edit `lua/plugins/colorscheme.lua` and `init.lua`.
 
 
 ## 🐛 Troubleshooting
@@ -307,6 +314,7 @@ This project includes comprehensive documentation. Here are the key files:
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**: Solutions to common problems.
 - **[NERD_FONTS.md](NERD_FONTS.md)**: Guide to installing and configuring Nerd Fonts for icons.
 - **[TERMINAL_SETUP.md](TERMINAL_SETUP.md)**: Instructions for setting up your terminal.
+- **[IR_BLACK_THEME.md](IR_BLACK_THEME.md)**: Documentation for the IR Black color scheme.
 - **[MIGRATION.md](MIGRATION.md)**: Our story of migrating from Vim to Neovim.
 - **[CONTRIBUTING.md](CONTRIBUTING.md)**: Guidelines for contributing to this project.
 - **[LICENSE.md](LICENSE.md)**: The MIT License for this project.

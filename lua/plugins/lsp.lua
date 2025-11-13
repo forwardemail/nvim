@@ -1,9 +1,9 @@
 --[[
   LSP Configuration
-  
+
   Uses native Neovim 0.11+ vim.lsp.config API
   No longer requires nvim-lspconfig plugin
-  
+
   NOTE: For XO and Prettier projects:
   - ESLint LSP is enabled below and will work with XO (XO uses ESLint under the hood)
   - Prettier formatting is handled by conform.nvim (see lua/plugins/conform.lua)
@@ -105,19 +105,19 @@ return {
           map('n', 'gi', vim.lsp.buf.implementation, 'Go to implementation')
           map('n', '<C-k>', vim.lsp.buf.signature_help, 'Signature help')
           map('n', 'gr', vim.lsp.buf.references, 'References')
-          
+
           -- Workspace
           map('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, 'Add workspace folder')
           map('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, 'Remove workspace folder')
           map('n', '<leader>wl', function()
             print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
           end, 'List workspace folders')
-          
+
           -- Code actions
           map('n', '<leader>D', vim.lsp.buf.type_definition, 'Type definition')
           map('n', '<leader>rn', vim.lsp.buf.rename, 'Rename')
           map({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, 'Code action')
-          
+
           -- Diagnostics
           map('n', '<leader>d', vim.diagnostic.open_float, 'Show diagnostic')
           map('n', '[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
@@ -179,20 +179,20 @@ return {
           end)
         end,
       })
-      
+
       -- Configure and enable each server using native API
       for _, server in ipairs(servers) do
         local name = server[1]
         local config = server[2] or {}
-        
+
         -- Add capabilities to config
         config.capabilities = capabilities
-        
+
         -- Use vim.lsp.config for configuration (if config exists)
         if next(config) ~= nil then
           vim.lsp.config(name, config)
         end
-        
+
         -- Enable the server
         vim.lsp.enable(name)
       end

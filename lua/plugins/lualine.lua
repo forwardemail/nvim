@@ -1,6 +1,6 @@
 --[[
   Lualine - Status Line
-  
+
   Replaces vim-powerline with modern Lua status line
 ]]
 
@@ -10,7 +10,7 @@ return {
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   opts = {
     options = {
-      theme = 'tokyonight',
+      theme = 'auto',  -- Auto-detect from colorscheme
       component_separators = { left = '', right = '' },
       section_separators = { left = '', right = '' },
       disabled_filetypes = {

@@ -1,13 +1,13 @@
 --[[
   Modern Neovim Configuration
   Migrated from classic Vim setup with Pathogen
-  
+
   Features:
   - lazy.nvim plugin manager with lazy loading
   - Smart autoformatter with config detection
   - Modern LSP, completion, and treesitter
   - 1:1 feature parity with original Vim config
-  
+
   Structure:
   - lua/config/    - Core configuration (options, keymaps, autocmds)
   - lua/plugins/   - Plugin specifications for lazy.nvim
@@ -49,7 +49,7 @@ require('lazy').setup('plugins', {
     lazy = true, -- Lazy load by default
   },
   install = {
-    colorscheme = { 'tokyonight' },
+    colorscheme = { 'ir_black' },
   },
   checker = {
     enabled = true, -- Check for plugin updates

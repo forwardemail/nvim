@@ -1,6 +1,6 @@
 --[[
   Telescope - Fuzzy Finder
-  
+
   Modern addition (not in original config)
   Provides powerful fuzzy finding for files, grep, buffers, etc.
 ]]

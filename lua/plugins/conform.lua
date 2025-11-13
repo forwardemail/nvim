@@ -1,9 +1,9 @@
 --[[
   Conform.nvim - Smart Formatter
-  
+
   Simplified configuration that avoids ERR_MODULE_NOT_FOUND errors
   Uses only built-in formatters (prettier, stylua, black, etc.)
-  
+
   Features:
   - Format on save with timeout
   - :Autoformat command for manual formatting
@@ -26,7 +26,7 @@ return {
   },
   config = function()
     local conform = require('conform')
-    
+
     conform.setup({
       -- Formatters by filetype
       formatters_by_ft = {
@@ -35,13 +35,13 @@ return {
         typescript = { 'prettier' },
         javascriptreact = { 'prettier' },
         typescriptreact = { 'prettier' },
-        
+
         -- Lua
         lua = { 'stylua' },
-        
+
         -- Python
         python = { 'ruff_format', 'black' },
-        
+
         -- Web
         html = { 'prettier' },
         css = { 'prettier' },
@@ -50,21 +50,21 @@ return {
         json = { 'prettier' },
         jsonc = { 'prettier' },
         yaml = { 'prettier' },
-        
+
         -- Markdown
         markdown = { 'prettier' },
-        
+
         -- Shell
         sh = { 'shfmt' },
         bash = { 'shfmt' },
-        
+
         -- Trim whitespace for all files
         ['*'] = { 'trim_whitespace' },
       },
-      
+
       -- Format on save DISABLED - only format manually with :Autoformat or gA
       format_on_save = nil,
-      
+
       -- Formatter configurations
       formatters = {
         -- Trim whitespace (replaces vim-better-whitespace)
@@ -81,7 +81,7 @@ return {
         },
       },
     })
-    
+
     -- Create :Autoformat command for compatibility
     vim.api.nvim_create_user_command('Autoformat', function()
       conform.format({ async = false, lsp_format = 'fallback' })

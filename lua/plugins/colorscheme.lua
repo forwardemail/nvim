@@ -1,40 +1,22 @@
 --[[
   Colorscheme
-  
-  Replaces vim-irblack with modern dark theme
-  Using tokyonight-night for terminal (similar to ir_black aesthetic)
+
+  Using IR Black theme (pure black background)
 ]]
 
 return {
-  'folke/tokyonight.nvim',
-  lazy = false, -- Load immediately
-  priority = 1000, -- Load before other plugins
-  opts = {
-    style = 'night', -- night, storm, day, moon
-    transparent = false,
-    terminal_colors = true,
-    styles = {
-      comments = { italic = true },
-      keywords = { italic = true },
-      functions = {},
-      variables = {},
-      sidebars = 'dark',
-      floats = 'dark',
-    },
-    sidebars = { 'qf', 'help', 'terminal', 'packer' },
-    day_brightness = 0.3,
-    hide_inactive_statusline = false,
-    dim_inactive = false,
-    lualine_bold = false,
-    on_colors = function(colors)
-      -- Customize colors to be closer to ir_black if desired
-    end,
-    on_highlights = function(highlights, colors)
-      -- Customize highlights
+  -- IR Black is loaded from colors/ir_black.lua
+  -- No plugin needed, just set the colorscheme
+  {
+    'folke/tokyonight.nvim',
+    enabled = false, -- Disable tokyonight
+  },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    optional = true,
+    opts = function()
+      -- Load IR Black colorscheme after treesitter
+      vim.cmd('colorscheme ir_black')
     end,
   },
-  config = function(_, opts)
-    require('tokyonight').setup(opts)
-    vim.cmd('colorscheme tokyonight-night')
-  end,
 }

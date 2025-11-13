@@ -1,6 +1,6 @@
 --[[
   Git Integration
-  
+
   Provides git status, diff viewing, and LazyGit integration
 ]]
 

@@ -1,6 +1,6 @@
 --[[
   Treesitter - Better Syntax Highlighting
-  
+
   Replaces vim-javascript, vim-jade, vim-less, etc.
   Provides superior syntax highlighting and code understanding
 ]]

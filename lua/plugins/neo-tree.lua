@@ -1,6 +1,6 @@
 --[[
   Neo-tree - File Explorer
-  
+
   Replaces NERDTree with modern Lua-based file explorer
   Keybinding: <leader>n to toggle (same as original)
 ]]
@@ -65,7 +65,7 @@ return {
         ['<space>'] = 'toggle_node',
         ['<cr>'] = 'open',
         ['<esc>'] = 'revert_preview',
-        ['/'] = 'filter_as_you_type', -- Better filtering with vim navigation
+        ['f'] = 'filter_as_you_type', -- Filter files
         ['P'] = { 'toggle_preview', config = { use_float = true } },
         ['l'] = 'focus_preview',
         ['s'] = 'open_split',
@@ -96,6 +96,11 @@ return {
       },
     },
     filesystem = {
+      window = {
+        mappings = {
+          ['/'] = 'noop',  -- Disable fuzzy finder, use native vim search
+        },
+      },
       filtered_items = {
         visible = true, -- Show hidden files by default
         hide_dotfiles = false,

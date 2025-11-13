@@ -1,6 +1,6 @@
 --[[
   Flash.nvim - Enhanced Motion
-  
+
   Replaces vim-easymotion with modern, faster alternative
   Keybinding: s for 2-char search (same as original)
 ]]
