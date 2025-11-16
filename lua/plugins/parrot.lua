@@ -13,7 +13,7 @@
 
 return {
   'frankroeder/parrot.nvim',
-  cmd = { 'PrtChatNew', 'PrtChatToggle', 'PrtChatDelete', 'PrtComplete', 'PrtExplain', 'PrtFixBugs', 'PrtOptimize', 'PrtUnitTests', 'PrtAddComments', 'PrtModel', 'PrtProvider', 'PrtInfo' },
+  cmd = { 'PrtChatNew', 'PrtChatToggle', 'PrtChatDelete', 'PrtComplete', 'PrtExplain', 'PrtFixBugs', 'PrtOptimize', 'PrtUnitTests', 'PrtAddComments', 'PrtSpellCheck', 'PrtModel', 'PrtProvider', 'PrtInfo' },
   keys = {
     { '<C-g><C-g>', mode = { 'n', 'i', 'v', 'x' }, desc = 'Parrot: Send message' },
     { '<C-g>d', mode = { 'n', 'i', 'v', 'x' }, desc = 'Parrot: Delete chat' },
@@ -313,6 +313,23 @@ return {
           ```
           
           Respond with the code including proper JSDoc comments.
+          ]]
+          local model = parrot.get_model('command')
+          parrot.Prompt(params, parrot.ui.Target.rewrite, model, nil, template)
+        end,
+        
+        -- Spell check and grammar correction
+        SpellCheck = function(parrot, params)
+          local template = [[
+          Fix all spelling and grammar errors in the following text.
+          Preserve the original formatting, code blocks, and structure.
+          Only fix spelling and grammar mistakes, do not change the meaning or style.
+          
+          ```{{filetype}}
+          {{selection}}
+          ```
+          
+          Respond with the corrected text only.
           ]]
           local model = parrot.get_model('command')
           parrot.Prompt(params, parrot.ui.Target.rewrite, model, nil, template)
