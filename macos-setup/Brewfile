@@ -1,0 +1,201 @@
+# macOS Development Environment Brewfile
+# This file contains all recommended packages for a complete development setup
+# Install with: brew bundle --file=Brewfile
+
+# ============================================================================
+# Taps (Third-party repositories)
+# ============================================================================
+tap "amar1729/formulae"
+tap "homebrew/autoupdate"
+tap "mklement0/ttab", "https://github.com/mklement0/ttab.git"
+tap "mongodb/brew"
+tap "romkatv/powerlevel10k"
+tap "tbvdm/tap"
+tap "tunneltodev/tap"
+
+# ============================================================================
+# Command Line Tools
+# ============================================================================
+
+# Modern Unix Tools
+brew "bat"              # Cat clone with syntax highlighting
+brew "eza"              # Modern ls replacement
+brew "fd"               # Fast alternative to find
+brew "fzf"              # Fuzzy finder (enables Ctrl+R history search)
+brew "ripgrep"          # Fast recursive grep
+brew "zoxide"           # Smarter cd command
+
+# File & Text Processing
+brew "coreutils"        # GNU core utilities
+brew "exiftool"         # Read/write meta information in files
+brew "fastmod"          # Fast code modification tool
+brew "hexedit"          # View and edit files in hexadecimal
+brew "loc"              # Count lines of code quickly
+
+# Development Tools
+brew "ansible"          # IT automation tool
+brew "ansible-lint"     # Ansible playbook linter
+brew "cmake"            # Cross-platform build system
+brew "diff-pdf"         # Compare PDF files visually
+brew "diff-so-fancy"    # Better git diff output
+brew "expect"           # Automate interactive applications
+brew "gifsicle"         # GIF manipulation tool
+brew "p7zip"            # 7-Zip file archiver
+brew "wget2"            # Internet file retriever
+
+# ============================================================================
+# Version Control & Git
+# ============================================================================
+brew "git"              # Distributed version control
+brew "git-extras"       # Extra git utilities
+brew "gh"               # GitHub CLI
+brew "lazygit"          # Terminal UI for git
+brew "bfg"              # Remove large files from git history
+
+# ============================================================================
+# Programming Languages & Runtimes
+# ============================================================================
+brew "go"               # Go programming language
+brew "node"             # Node.js JavaScript runtime
+brew "n"                # Node version manager
+brew "php"              # PHP programming language
+brew "openjdk"          # Java Development Kit
+brew "pyenv"            # Python version manager
+brew "pipx"             # Install Python applications in isolated environments
+
+# ============================================================================
+# Security & Privacy
+# ============================================================================
+brew "gnupg"            # GNU Privacy Guard
+brew "gpgme"            # GnuPG Made Easy library
+brew "pinentry"         # PIN entry dialog
+brew "pinentry-mac"     # macOS-native PIN entry
+brew "pass"             # Password manager
+brew "pass-otp"         # OTP extension for pass
+brew "keychain"         # Manage SSH and GPG keys
+brew "amar1729/formulae/browserpass"  # Browser extension for pass
+
+# ============================================================================
+# Networking & Remote Access
+# ============================================================================
+brew "curl"             # Transfer data with URLs
+brew "libssh2"          # SSH2 client-side library
+brew "mosh"             # Mobile shell (better than SSH)
+brew "nmap"             # Network mapper
+brew "sshuttle"         # VPN over SSH
+brew "telnet"           # Telnet client
+
+# ============================================================================
+# Databases
+# ============================================================================
+brew "redis", restart_service: :changed
+brew "mongodb/brew/mongodb-community@6.0"
+brew "mongosh"          # MongoDB Shell
+
+# ============================================================================
+# AI & Machine Learning
+# ============================================================================
+brew "ollama", restart_service: :changed  # Local LLM server
+
+# ============================================================================
+# Shell & Terminal
+# ============================================================================
+brew "zsh"                      # Z shell
+brew "zsh-autosuggestions"      # Fish-like autosuggestions
+brew "zsh-completions"          # Additional completions
+brew "zsh-syntax-highlighting"  # Fish-like syntax highlighting
+brew "powerlevel10k"            # ZSH theme
+
+# ============================================================================
+# Build Dependencies & Libraries
+# ============================================================================
+brew "libpng"           # PNG image library
+brew "libsodium"        # Cryptography library
+brew "glib"             # Core application library
+brew "gobject-introspection"
+brew "poppler"          # PDF rendering library
+brew "qt"               # Cross-platform application framework
+brew "composer"         # PHP dependency manager
+
+# ============================================================================
+# Cloud & Deployment
+# ============================================================================
+brew "heroku"           # Heroku CLI
+
+# ============================================================================
+# Casks (GUI Applications)
+# ============================================================================
+
+# Terminal & Development
+cask "iterm2"           # Better terminal emulator
+cask "neovim"           # Modern Vim-based editor (GUI)
+
+# Browsers
+cask "ungoogled-chromium"  # Privacy-focused Chromium
+cask "tor-browser"         # Anonymous browsing
+
+# Security & Privacy
+cask "blockblock"       # Monitor process creations
+cask "gpgfrontend"      # GPG encryption frontend
+cask "signal"           # Private messaging
+
+# Productivity
+cask "dropbox"          # Cloud storage
+cask "element"          # Matrix client
+cask "spotify"          # Music streaming
+
+# Media & Graphics
+cask "gimp"             # Image editor
+cask "kap"              # Screen recorder
+cask "gifski"           # High-quality GIF converter
+cask "sketch"           # Design tool
+
+# Development Tools
+cask "medis"            # Redis GUI
+cask "ngrok"            # Secure tunnels to localhost
+cask "sloth"            # Shows open files and sockets
+cask "tabula"           # Extract tables from PDFs
+cask "sqlitestudio"     # SQLite database browser
+
+# Virtualization & System Tools
+cask "utm"              # Virtual machines for macOS
+cask "raspberry-pi-imager"  # Create bootable Raspberry Pi media
+cask "unetbootin"       # Create bootable USB drives
+cask "mist"             # macOS firmware downloader
+
+# Office & Documents
+cask "libreoffice"      # Office suite
+cask "mactex-no-gui"    # LaTeX distribution
+
+# Utilities
+cask "handy"            # Window management
+cask "sweet-home3d"     # Interior design
+cask "ultimaker-cura"   # 3D printing slicer
+
+# Fonts (Nerd Fonts for terminal)
+cask "font-dejavu-sans-mono-nerd-font"
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-inconsolata-lgc-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+cask "font-meslo-lg-nerd-font"
+
+# ============================================================================
+# Optional Recommended Applications (Not in Homebrew)
+# ============================================================================
+# Install manually from their websites/GitHub:
+#
+# - SquirrelDisk: https://github.com/adileo/squirreldisk
+#   Fast disk usage analyzer built with Rust
+#
+# - Crystal Fetch: Available via brew (crystalfetch)
+#   Already included above
+#
+# - OpenRCT2: Available via brew (openrct2)
+#   Already included above
+#
+# - swiftGuard: https://github.com/Lennolium/swiftGuard
+#   Anti-forensic USB port monitoring
+#
+# - Display Pilot 2: Commercial app
+#   Display management utility

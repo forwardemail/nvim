@@ -94,7 +94,7 @@ Formatters not installed.
 4. Or install globally:
    ```sh
    npm install -g prettier xo standard
-   pip install black
+   pipx install black
    ```
 
 ## Slow Startup

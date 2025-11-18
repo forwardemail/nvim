@@ -110,7 +110,7 @@ After installing and configuring:
 
 If you prefer not to use Nerd Fonts, the configuration already uses simple ASCII characters that work with any font:
 - `+` for closed folders
-- `-` for open folders  
+- `-` for open folders
 - `*` for files
 
 These should display correctly without any special font.

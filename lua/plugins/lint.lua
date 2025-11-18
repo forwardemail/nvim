@@ -144,7 +144,7 @@ return {
       -- Run XO asynchronously from project root
       vim.system(
         vim.list_extend({ xo_cmd }, args),
-        { 
+        {
           text = true,
           cwd = project_root  -- Run from project root to find config files
         },
@@ -291,7 +291,7 @@ return {
       -- Run remark asynchronously from project root
       vim.system(
         vim.list_extend({ remark_cmd }, args),
-        { 
+        {
           text = true,
           cwd = project_root  -- Run from project root to find config files
         },
@@ -415,7 +415,7 @@ return {
       -- Run pug-lint asynchronously from project root
       vim.system(
         vim.list_extend({ puglint_cmd }, args),
-        { 
+        {
           text = true,
           cwd = project_root  -- Run from project root to find config files
         },
@@ -504,7 +504,7 @@ return {
       -- Run stylelint asynchronously from project root
       vim.system(
         vim.list_extend({ stylelint_cmd }, args),
-        { 
+        {
           text = true,
           cwd = project_root  -- Run from project root to find config files
         },

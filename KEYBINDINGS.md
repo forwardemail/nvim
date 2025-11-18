@@ -198,6 +198,55 @@ When Neo-tree is focused:
 | `R` | Refresh | Refresh tree |
 | `?` | Help | Show help |
 
+## AI Assistants
+
+### Parrot.nvim (AI Coding)
+
+| Command | Description |
+|---------|-----------|
+| `:PrtChatToggle` | Toggle AI chat window for coding questions |
+| `:PrtChatNew` | Start new AI chat session |
+| `:PrtChatDelete` | Delete current chat session |
+| `:PrtChatFinder` | Find and switch between chat sessions |
+| `:PrtInfo` | Show Parrot.nvim status and model info |
+| `:PrtSpellCheck` | Run spell check with AI |
+
+**Usage:**
+1. Open a file (e.g., `test.js`)
+2. Run `:PrtChatToggle`
+3. Type your question: "Write a function to reverse a string"
+4. Press Enter
+5. AI responds with code
+
+
+| Key | Mode | Action | Description |
+|-----|------|--------|-------------|
+| `<leader>aa` (`,aa`) | Normal | Toggle Avante | Open/close AI chat sidebar |
+| `<leader>ar` (`,ar`) | Normal | Refresh Avante | Refresh Avante sidebar |
+| `<leader>af` (`,af`) | Normal | Focus Avante | Focus on Avante input |
+
+**Usage:**
+1. Press `,aa` to open Avante sidebar
+2. Type your question in the input field
+3. Press Enter
+
+
+
+| Key | Mode | Action | Description |
+|-----|------|--------|-------------|
+
+- Toggle servers on/off
+- View available tools
+- View available resources
+- Test tools directly
+- Install new servers from marketplace
+
+- `<Tab>` - Switch between tabs (Servers, Tools, Resources, etc.)
+- `<Enter>` - Select/activate item
+- `?` - Show help
+
+All functionality (servers, tools, resources) is accessed through this interface.
+
 ## Mason (LSP/Tool Installer)
 
 | Command | Description |
@@ -227,14 +276,18 @@ When Neo-tree is focused:
 ## Quick Reference Card
 
 **Most Used:**
-- `<leader>w` - Save
-- `<leader>n` - Toggle file tree
-- `<leader>ff` - Find files
-- `<leader>fg` - Search in files
-- `gA` - **Autoformat** (NEW)
+- `,w` - Save
+- `,n` - Toggle file tree
+- `,ff` - Find files
+- `,fg` - Search in files
+- `gA` - Autoformat
 - `gcc` - Comment line
 - `jj` - Exit insert mode
-- `<leader>c` / `<leader>v` - Copy/paste system clipboard
+- `,c` / `,v` - Copy/paste system clipboard
+
+**AI & Automation:**
+- `:PrtChatToggle` - AI coding assistant
+- `,aa` - AI chat with system automation
 
 **Format & Clean:**
 - `gA` - **Autoformat with smart config detection**
