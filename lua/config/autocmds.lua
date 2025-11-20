@@ -137,35 +137,58 @@ end
 -- DIAGNOSTICS
 -- ============================================================================
 
+-- Helper function to check if location list window is open
+local function is_loclist_open()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].buftype == 'quickfix' then
+      local wininfo = vim.fn.getwininfo(win)[1]
+      if wininfo and wininfo.loclist == 1 then
+        return true
+      end
+    end
+  end
+  return false
+end
+
 -- Helper function to populate location list with diagnostics
 local function populate_loclist()
-  vim.diagnostic.setloclist({ open = false })
+  -- Don't update if location list window is currently open (prevents E926 error)
+  if not is_loclist_open() then
+    vim.diagnostic.setloclist({ open = false })
+  end
 end
 
 -- Auto-populate location list and jump to first diagnostic on save
 local diagnostic_group = augroup('DiagnosticJump', { clear = true })
 
--- Populate location list on save
+-- Simple approach: wait 2 seconds after save for LSP to finish
 autocmd('BufWritePost', {
   group = diagnostic_group,
   pattern = '*',
   callback = function()
-    -- Wait a bit for diagnostics to update after save
+    -- Wait 2 seconds for LSP to generate diagnostics
     vim.defer_fn(function()
-      -- Always populate location list (even if empty)
-      populate_loclist()
-      
-      -- Jump to first diagnostic if any exist
       local diagnostics = vim.diagnostic.get(0, { severity = { min = vim.diagnostic.severity.WARN } })
+      
       if #diagnostics > 0 then
+        -- Populate location list
+        vim.diagnostic.setloclist({ open = false })
+        
+        -- Open location list window if not already open
+        if not is_loclist_open() then
+          vim.cmd('lopen')
+        end
+        
+        -- Jump to first diagnostic
         vim.diagnostic.goto_next({ wrap = false, float = false })
       end
-    end, 100)
+    end, 2000)  -- 2 second delay to ensure LSP has finished
   end,
-  desc = 'Populate location list and jump to first diagnostic on save',
+  desc = 'Auto-open location list and jump to first diagnostic on save',
 })
 
--- Also populate location list when diagnostics change
+-- Also populate location list when diagnostics change (but don't auto-open)
 autocmd('DiagnosticChanged', {
   group = diagnostic_group,
   pattern = '*',

@@ -187,9 +187,20 @@ keymap('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
 -- These work with native Neovim location list
 keymap('n', '<leader>lo', ':lopen<CR>', { desc = 'Open location list' })
 keymap('n', '<leader>lc', ':lclose<CR>', { desc = 'Close location list' })
-keymap('n', '<leader>ln', ':lnext<CR>', { desc = 'Next location list item' })
-keymap('n', '<leader>lp', ':lprev<CR>', { desc = 'Previous location list item' })
 keymap('n', '<leader>ll', ':DiagnosticsToLocList<CR>', { desc = 'Populate location list with diagnostics' })
+
+-- Map :lnext and :lprev to diagnostic navigation (more reliable than location list)
+keymap('n', '<leader>ln', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
+keymap('n', '<leader>lp', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
+
+-- Create command aliases for classic Vim muscle memory
+vim.api.nvim_create_user_command('Lnext', function()
+  vim.diagnostic.goto_next()
+end, { desc = 'Jump to next diagnostic' })
+
+vim.api.nvim_create_user_command('Lprev', function()
+  vim.diagnostic.goto_prev()
+end, { desc = 'Jump to previous diagnostic' })
 
 -- ============================================================================
 -- LSP KEYMAPS (will be set in LSP config)
